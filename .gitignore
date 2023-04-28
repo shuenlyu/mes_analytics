@@ -1,0 +1,6 @@
+data/config.py
+*_debug.py 
+*/*_debug.py
+
+__pycache__/
+*.py[cod]
