@@ -23,7 +23,6 @@ def code_timer(func):
         return value 
     return wrapper_timer
 
-@code_timer
 def sql_conn(cfg):
     SQL_USER = cfg["SQL_USER"]
     SQL_PASSWORD = cfg["SQL_PWD"]
@@ -45,4 +44,23 @@ def sql_conn(cfg):
 def get_table(sql_query, engine):
     with engine.connect() as conn:
         df = pd.read_sql(text(sql_query), conn)
-    return df 
+    return df
+
+def view_column_name_mapping(name_list):
+    """set up rules for generizing the name of all columns"""
+    mapping = {}
+    
+    for col in name_list:
+        lower_col = col.lower()
+        if lower_col == "workweek":
+            lower_col = "work_week"
+        elif lower_col == "workmonth":
+            lower_col = "work_month"
+        elif lower_col == "workyear":
+            lower_col = "work_year"
+        elif lower_col == "locationname":
+            lower_col = "location_name"
+        mapping[col] = lower_col
+    
+    return mapping  
+     

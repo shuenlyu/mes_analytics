@@ -1,5 +1,5 @@
 from .config import sql_cfg, tables_cfg 
-from .utils import code_timer, sql_conn, get_table 
+from .utils import code_timer, sql_conn, get_table, view_column_name_mapping 
 
 from collections import OrderedDict
 import pandas as pd 
@@ -7,18 +7,40 @@ import pandas as pd
 from app import app, cache, TIMEOUT
 import inspect 
 
+def date_format(origin_df):
+    input_df = origin_df.copy()
+    if "date" in input_df.columns:
+        # input_df.date = pd.to_datetime(input_df.date).dt.strftime("%b %d")
+        input_df.date = pd.to_datetime(input_df.date).dt.date
+    elif "kit_box_date" in input_df.columns:
+        #transform for mes df compliance dataframe
+        input_df.kit_box_date = pd.to_datetime(input_df.kit_box_date).dt.date        
+    elif "dateopened" in input_df.columns:
+        input_df.dateopened = pd.to_datetime(input_df.dateopened).dt.date
+    return input_df
+
 
 @code_timer
-@cache.memoize()
+@cache.memoize(timeout=TIMEOUT)
 def all_tables():
     sql_views = OrderedDict() 
     sql_query_template = "SELECT * FROM {};"
     engine = sql_conn(sql_cfg) 
 
     for key, view in tables_cfg.items():
-        sql_views[f"TABLE_{key.upper()}"] = get_table(sql_query_template.format(view), engine)
-    
-    """debugging block to print the frame where this function is being called"""
+        origin_df =  get_table(sql_query_template.format(view), engine)
+        #Data transformation
+        #rename columns to generize all the name to lower case and make the name for workweek workyear, 
+        # locationname the same for all the views 
+        name_mapping = view_column_name_mapping(origin_df.columns.values)
+        origin_df.rename(columns=name_mapping, inplace=True)
+        
+        #mes df compliance transform
+        if "kit_box_date" in origin_df.columns: 
+            origin_df["work_week_rw"] = pd.to_datetime(origin_df.kit_box_date).apply(lambda x: x.weekofyear)
+            
+        sql_views[f"TABLE_{key.upper()}"] = date_format(origin_df)
+        """debugging block to print the frame where this function is being called"""
     # caller_frame = inspect.getsource(inspect.currentframe().f_back)
     # print(caller_frame)
     return sql_views    
@@ -30,18 +52,20 @@ rcv_df               = sql_views.get("TABLE_RCV")
 shp_df               = sql_views.get("TABLE_SHP")
 rcv_shp_df           = sql_views.get("TABLE_RCV_SHP")
 wip_df               = sql_views.get("TABLE_WIP")
+otd_df               = sql_views.get("TABLE_OTD")
 tat_df               = sql_views.get("TABLE_TAT")
 dmr_df               = sql_views.get("TABLE_DMR")
 eTraveler_df         = sql_views.get("TABLE_ETRAVELER")
 mes_proc_df          = sql_views.get("TABLE_MES_PROC")
 mes_wait_df          = sql_views.get("TABLE_MES_WAIT")
+# mes_proc_wait_df     = sql_views.get("TABEL_MES_PROC_WAIT")
 mes_rcv_df           = sql_views.get("TABLE_MES_RCV")
 mes_shp_df           = sql_views.get("TABLE_MES_SHP")
 mes_compliance_df    = sql_views.get("TABLE_MES_COMPLIANCE")
 
 
 ##data transformation 
-mes_compliance_df["WorkWeek_RW"] = pd.to_datetime(mes_compliance_df.Kit_Box_Date).apply(lambda x: x.weekofyear)
+# mes_compliance_df["work_week_rw"] = pd.to_datetime(mes_compliance_df.kit_box_date).apply(lambda x: x.weekofyear)
 
 '''
 tables and their columns
@@ -82,46 +106,46 @@ mes_compliance_df.columns: ['location_name' 'Work_Order_No' 'Work_Order_Split' '
 @cache.memoize(timeout=TIMEOUT)
 def global_slicer_data():
     slicer_work_week = pd.concat([
-        rcv_df.WorkWeek, 
-        shp_df.WorkWeek, 
-        rcv_shp_df.WorkWeek, 
-        wip_df.WorkWeek, 
-        tat_df.WorkWeek, 
-        dmr_df.WorkWeek, 
-        eTraveler_df.Workweek,
-        mes_proc_df.WorkWeek,
-        mes_wait_df.WorkWeek, 
-        mes_rcv_df.WorkWeek, 
-        mes_shp_df.WorkWeek, 
-        mes_compliance_df.WorkWeek_RW
+        rcv_df.work_week, 
+        shp_df.work_week, 
+        rcv_shp_df.work_week, 
+        wip_df.work_week, 
+        tat_df.work_week, 
+        dmr_df.work_week, 
+        eTraveler_df.work_week,
+        mes_proc_df.work_week,
+        mes_wait_df.work_week, 
+        mes_rcv_df.work_week, 
+        mes_shp_df.work_week, 
+        mes_compliance_df.work_week_rw
     ], ignore_index=True).astype("int64").drop_duplicates().sort_values().to_list() 
     
     slicer_work_year = pd.concat([
-        rcv_df.Work_Year,
-        shp_df.Work_Year,
-        rcv_shp_df.Work_Year, 
-        wip_df.Work_Year,
-        tat_df.WorkYear, 
-        dmr_df.Work_year, 
-        eTraveler_df.Work_Year,
-        mes_proc_df.Work_year,
-        mes_wait_df.Work_year,
-        mes_rcv_df.Work_Year,
-        mes_shp_df.Work_Year,
-        mes_compliance_df.WorkYear], ignore_index=True).drop_duplicates().sort_values().to_list()
+        rcv_df.work_year,
+        shp_df.work_year,
+        rcv_shp_df.work_year, 
+        wip_df.work_year,
+        tat_df.work_year, 
+        dmr_df.work_year, 
+        eTraveler_df.work_year,
+        mes_proc_df.work_year,
+        mes_wait_df.work_year,
+        mes_rcv_df.work_year,
+        mes_shp_df.work_year,
+        mes_compliance_df.work_year], ignore_index=True).drop_duplicates().sort_values().to_list()
     
     slicer_locations = pd.concat([
-        rcv_df.Location_Name, 
-        shp_df.Location_Name, 
-        rcv_shp_df.Location_Name, 
-        wip_df.Location_Name, 
-        tat_df.Location_Name, 
-        dmr_df.Location_Name, 
-        eTraveler_df.locationName, 
-        mes_proc_df.location_Name, 
-        mes_wait_df.location_Name, 
-        mes_rcv_df.Location_Name, 
-        mes_shp_df.Location_Name, 
+        rcv_df.location_name, 
+        shp_df.location_name, 
+        rcv_shp_df.location_name, 
+        wip_df.location_name, 
+        tat_df.location_name, 
+        dmr_df.location_name, 
+        eTraveler_df.location_name, 
+        mes_proc_df.location_name, 
+        mes_wait_df.location_name, 
+        mes_rcv_df.location_name, 
+        mes_shp_df.location_name, 
         mes_compliance_df.location_name
     ], ignore_index=True).drop_duplicates().sort_values().to_list() 
     return slicer_work_year, slicer_work_week, slicer_locations

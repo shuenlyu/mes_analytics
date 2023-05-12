@@ -18,7 +18,8 @@ def global_slicer():
                                 id="global-slicer-work-year",
                                 options=slicer_work_year,
                                 value=slicer_work_year,
-                                multi=True
+                                multi=True,
+                                placeholder="select a work year"
                             )
                         ],
                         direction = "horizontal",
@@ -37,7 +38,8 @@ def global_slicer():
                                 id="global-slicer-work-week",
                                 options = slicer_work_week,
                                 value = slicer_work_week,
-                                multi = True
+                                multi = True,
+                                placeholder="select a work week"
 
                            )
                        ],
@@ -57,7 +59,9 @@ def global_slicer():
                                 id="global-slicer-locations",
                                 options = slicer_location, 
                                 value = slicer_location,
-                                multi=True
+                                multi=True,
+                                placeholder="select a location",
+                                # style={"width":"13rem", "display": "inline"}
                             )
                         ],
                         direction = "horizontal", 

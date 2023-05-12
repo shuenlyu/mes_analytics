@@ -8,6 +8,9 @@ from flask_caching import Cache
 
 from src.layout import build_tabs, banner, footer, global_slicer
 from src.layout.composent_test import dropdown_test
+from src.pages import about_page
+
+from src.tabs import tab_documentation, tab_mes_analytics, tab_iron_gate_compliance, tab_weekly_summary
 
 from app import app 
 
@@ -20,9 +23,8 @@ app.layout = dbc.Container(
     children=[
         dcc.Location(id="url", refresh=False),
         banner(), 
-        html.Div(id="page-content"),
-        global_slicer(),
-        dropdown_test(),
+        html.Div(id="page-content", 
+                 style={"display":"flex", "min-height":"100vh"}),
         footer()
     ]
 ) 
@@ -36,7 +38,24 @@ app.layout = dbc.Container(
 def display_page(pathname):
     if pathname == "/":
         return build_tabs() 
+    elif pathname == "/about":
+        return about_page()
 
+@app.callback(
+    Output("tab-content", "children"),
+    Input("tabs", "value")
+)
+def update_tab_content(tab_selected):
+    if tab_selected == "documentation":
+        return tab_documentation()
+    elif tab_selected == "mes-analytics":
+        return tab_mes_analytics()
+    elif tab_selected == "iron-gate-compliance":
+        return tab_iron_gate_compliance()
+    elif tab_selected == "weekly-summary":
+        return tab_weekly_summary()
+    else:
+        return html.Div(f"Tab {tab_selected} not implemented yet!")
 
 if __name__ == "__main__":
     print(app._callback_list)

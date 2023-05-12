@@ -1,6 +1,8 @@
 
 from dash import html, dcc 
 import dash_bootstrap_components as dbc 
+from .global_slicer import global_slicer
+from .composent_test import dropdown_test
 
 def build_tabs():
     """ build the seven different tabs """
@@ -14,7 +16,7 @@ def build_tabs():
                 children=[
                     dcc.Tab(
                         label="Weekly Summary",
-                        value="tab-select",
+                        value="weekly-summary",
                         className="custom-tab",
                         selected_className="custom-tab--selected",
                     ),
@@ -48,6 +50,14 @@ def build_tabs():
                         className="custom-tab--selected",
                         # disable=True,
                     ),
+                ]
+            ),
+            html.Div(
+                id="tab-content-containers",
+                children=[global_slicer(),
+                          html.Hr(),
+                          html.Div(id="tab-content")
+                    
                 ]
             )
         ]

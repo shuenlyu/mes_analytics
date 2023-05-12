@@ -5,3 +5,11 @@ print(in1 is in2, out1 is out2)
 from dash import callback as call1 
 from app import app 
 print(app.callback is call1)
+
+from dash import dcc
+store = dcc.Store
+graph = dcc.Graph 
+
+import dash_bootstrap_components as dbc 
+from dash import dcc 
+print(dcc.Tabs is dbc.Tabs)
