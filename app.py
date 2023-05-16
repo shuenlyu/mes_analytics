@@ -12,4 +12,4 @@ cache = Cache(app.server, config={
     "CACHE_DIR": "cache-directory"
 })
 
-TIMEOUT = 6000
+TIMEOUT = 60000

@@ -1,4 +1,4 @@
-from dash import html, Input, Output, dcc 
+from dash import html, Input, Output, dcc, dash_table
 
 import dash_bootstrap_components as dbc 
 import plotly.express as px 
@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 
 from utils.data import mes_compliance_df
 from app import app 
- 
 
 def tab_iron_gate_compliance():
     tab_layout = dbc.Row(
@@ -35,9 +34,7 @@ def update_tab_iron_gate_compliance(workyear, workweek, locations):
     wo_count_date_status = filtered_mes_compliance_df.\
         groupby(["kit_box_date", "action_status"]).\
         wo_num.count().rename("wo_count").reset_index() 
-    # print(wo_count_date_status)
     
-    # print(filtered_mes_compliance_df) 
     fig_iron_gate_analysis = px.bar(
         wo_count_date_status, 
         x = 'kit_box_date', 
@@ -45,4 +42,13 @@ def update_tab_iron_gate_compliance(workyear, workweek, locations):
         color="action_status"
     )
     #TODO matrix table for iron-gate analysis
-    return fig_iron_gate_analysis, None
+    filtered_mes_compliance_df.fillna(value={"override_by":" "}, inplace=True)
+    count_wo_df = filtered_mes_compliance_df.groupby(["kit_box_date", "action_status", "override_by"])\
+        .work_order_no.count().rename("wo_count").reset_index()
+    
+    count_wo_dt = dash_table.DataTable(
+        count_wo_df.to_dict("records"),
+        [{"name":i, "id":i} for i in count_wo_df.columns]
+    )
+    
+    return fig_iron_gate_analysis,  count_wo_dt 

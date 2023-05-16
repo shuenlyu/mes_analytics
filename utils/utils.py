@@ -32,7 +32,7 @@ def sql_conn(cfg):
     sql_db_url = f"mssql+pymssql://{SQL_USER}:{SQL_PASSWORD}@{SQL_SERVER}/{SQL_DB}"
     try:
         engine = create_engine(sql_db_url)
-        print(f"Engine connection established to SERVER:{SQL_SERVER}-DB:{SQL_DB}!!!")
+        # print(f"Engine connection established to SERVER:{SQL_SERVER}-DB:{SQL_DB}!!!")
         return engine  
     except Exception as e:
         print(f"Engine connection failed!!!!")

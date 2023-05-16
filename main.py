@@ -10,7 +10,11 @@ from src.layout import build_tabs, banner, footer, global_slicer
 from src.layout.composent_test import dropdown_test
 from src.pages import about_page
 
-from src.tabs import tab_documentation, tab_mes_analytics, tab_iron_gate_compliance, tab_weekly_summary
+from src.tabs import tab_documentation, \
+    tab_mes_analytics, \
+    tab_iron_gate_compliance, \
+    tab_weekly_summary, \
+    tab_comparison
 
 from app import app 
 
@@ -54,6 +58,9 @@ def update_tab_content(tab_selected):
         return tab_iron_gate_compliance()
     elif tab_selected == "weekly-summary":
         return tab_weekly_summary()
+    elif tab_selected == "comparison":
+        print("entering tab comparison!!")
+        return tab_comparison()
     else:
         return html.Div(f"Tab {tab_selected} not implemented yet!")
 

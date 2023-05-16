@@ -123,7 +123,7 @@ def update_shp_mes_success(workyear, workweek, locations):
         x=total_eTravler_barcodes.index, 
         y=total_eTravler_barcodes, 
         textposition="auto", 
-        texttemplate="{y:.0f}", 
+        texttemplate="%{y:.0f}", 
         name="MES Success" 
     )
    
