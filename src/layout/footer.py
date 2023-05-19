@@ -3,18 +3,16 @@ import dash_bootstrap_components as dbc
 
 
 def footer():
-    return  html.Div(
-         children=[
-               html.Div([],style={"flex-grow":1}),
-               dbc.Row(
-                          id="footer",
-                          align="center", 
-                          # justify="center", 
-                          children = [
-                               html.H6(["©2023, Developed By UCT Digital Transformation Team"],
-                                       style={"text-align":"center"})
-                          ],
-                          style={"display": "flex"}
-                          )
+     footer_content =\
+     dbc.Row(
+          id="footer",
+          class_name="footer-row",
+          children = [
+               html.H6(
+                    ["©2023, Developed By UCT Digital Transformation Team"],
+                    className="footer-row--content")
+          ],
+          align='end',
+     )
+     return footer_content
               
-         ])

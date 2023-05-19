@@ -22,13 +22,15 @@ server = app.server
 
 app.title = "UCT IAnalytics Platform"
 app.layout = dbc.Container(
+    class_name="app-container",
     fluid=True, 
-    style={"padding":"0"},
     children=[
         dcc.Location(id="url", refresh=False),
         banner(), 
-        html.Div(id="page-content", 
-                 style={"display":"flex", "min-height":"100vh"}),
+        html.Div(
+            className="page-content",
+            id="page-content"
+        ), 
         footer()
     ]
 ) 
@@ -44,6 +46,9 @@ def display_page(pathname):
         return build_tabs() 
     elif pathname == "/about":
         return about_page()
+    else:
+        return dcc.Markdown(
+            "#### wrong route path")
 
 @app.callback(
     Output("tab-content", "children"),

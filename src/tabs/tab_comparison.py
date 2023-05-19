@@ -17,7 +17,7 @@ def tab_comparison():
             dbc.Row(
                 children=[
                     dbc.Col(
-                        id="table-mes-adoption-adherence"
+                        id="table-mes-adoption-adherence", className="dbc"
                     ),
                     dbc.Col(
                         dcc.Graph(id="graph-mes-adoption-adherence"),
@@ -27,7 +27,7 @@ def tab_comparison():
             dbc.Row(
                 children=[
                     dbc.Col(
-                        id="table-iron-gate-violations"
+                        id="table-iron-gate-violations", className="dbc"
                     ),
                     dbc.Col(
                         dcc.Graph(id="graph-iron-gate-violations")
@@ -46,12 +46,17 @@ def tab_comparison():
     Input("global-slicer-locations", "value")
 )
 def update_mes_adoption_adherence(workyear, workweek, locations):
+    workyear, workweek, locations = sorted(workyear), sorted(workweek), sorted(locations)
+    
     filtered_mes_shp_df = mes_shp_df[
         mes_shp_df.work_year.isin(workyear) &\
         mes_shp_df.work_week.isin(workweek) &\
         mes_shp_df.location_name.isin(locations)
     ]
-    
+    print("update mes adoption adherence")
+    print(workyear, workweek, locations)
+    print(filtered_mes_shp_df)
+     
     mes_barcodes_count_df = filtered_mes_shp_df.groupby(["location_name", "work_week"])\
         .mes_shp_bc.sum()\
         .rename("mes_shp_BC")\

@@ -8,11 +8,12 @@ def build_tabs():
     """ build the seven different tabs """
     return html.Div(
         id = "tabs-container",
+        className="dbc",
         children=[
             dcc.Tabs(
                 id="tabs",
                 parent_className="custom-tabs",
-                value="tab-select",
+                value="weekly-summary",
                 children=[
                     dcc.Tab(
                         label="Weekly Summary",

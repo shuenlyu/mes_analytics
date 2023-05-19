@@ -5,34 +5,32 @@ import dash_bootstrap_components as dbc
 def banner():
     """Build the banner at the top of the page 
     """
-    return html.Div(
-        id="banner",
+    banner_content = \
+    dbc.Row(
+        class_name="banner-row",
+        align="center",
         children=[
-            dbc.Row(
-                align="start",
-                children=[
-                    dbc.Col(
-                            html.A(
-                                href="/",
-                                children=[
-                                    html.Img(
-                                        src="assets/img/OneUCT_Logo_NoBackground_SM.png",
-                                        # style={"height": "50%", "width":"50%"}
-                                        style={'height': '30px','width': 'auto','margin-bottom': '0px'}
-                                    ),
-                                ],
-                        ),
-                        align="center",
-                        width="auto"
-                    ),
-                    dbc.Col(
-                        align="center",
+            dbc.Col(
+                    html.A(
+                        href="/",
                         children=[
-                            html.H1(id="banner-title", children=["MES Analytics"]),
-                            # html.H5(id="banner-subtitle", children=["Select Tab"])
+                            html.Img(
+                                className="banner-row--img",
+                                src="assets/img/OneUCT_Logo_NoBackground_SM.png",
+                            ),
                         ],
-                    ),
-                ]
-            )
+                ),
+                align="center",
+                width="auto"
+            ),
+            dbc.Col(
+                align="center",
+                children=[
+                    html.H3(
+                        className="banner-row--title",
+                        children=["MES Analytics"]),
+                ],
+            ),
         ]
     )
+    return banner_content

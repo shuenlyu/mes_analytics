@@ -12,7 +12,7 @@ def tab_iron_gate_compliance():
         children=[
             #TODO customize layout attributes
             dbc.Col(dcc.Graph(id="graph-iron-gate-analysis")),
-            dbc.Col(id="table-iron-gate-compliance")
+            dbc.Col(id="table-iron-gate-compliance", className="dbc")
         ]
     )
     return tab_layout

@@ -1,0 +1,36 @@
+/* dash app contianer the whole page */
+#app-container {
+    padding: 5;
+}
+
+.banner-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.banner-row .banner-row--img {
+    height: 50px;
+    width: auto;
+    /* background-color: aqua; */
+    /* margin-bottom: 0px; */
+}
+.banner-row .banner-row--title{
+    /* background-color: blueviolet; */
+    font-style: italic;
+    /* color:burlywood; */
+}
+
+.page-content {
+    display:flex;
+    min-height: 100vh;
+}
+
+.footer-row {
+    height: 50px;
+}
+
+.footer-row .footer-row--content {
+    text-align: center;
+    color: darkgray
+}
