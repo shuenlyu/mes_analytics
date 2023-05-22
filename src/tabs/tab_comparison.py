@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 
 import dash_bootstrap_components as dbc
 from utils.data import eTraveler_df, mes_shp_df, mes_compliance_df
-
+from utils import base_bar_attr, base_layout
 import pandas as pd 
 from itertools import product
 
@@ -15,6 +15,7 @@ def tab_comparison():
     tab_layout = dbc.Row(
         children=[
             dbc.Row(
+                class_name="tab-com-row-first",
                 children=[
                     dbc.Col(
                         id="table-mes-adoption-adherence", className="dbc"
@@ -25,6 +26,7 @@ def tab_comparison():
                 ]
             ), 
             dbc.Row(
+                # class_name="tab-com-rows",
                 children=[
                     dbc.Col(
                         id="table-iron-gate-violations", className="dbc"
@@ -99,18 +101,72 @@ def update_mes_adoption_adherence(workyear, workweek, locations):
     mes_adherence_df = pd.pivot(index_mes_eTraveler_df, index="location_name", columns="work_week", values="mes_adherence")
     mes_adherence_df.reset_index(inplace=True)
   
-    mes_adherence_dt_columns = sorted([{"name":i, "id":i} for i in mes_adherence_df.columns[1:]], key=lambda x: int(x["name"]))
-    mes_adherence_dt_columns.insert(0, {"name":"location_name", "id":"location_name"})
+    mes_adherence_dt_columns = sorted([{"name":f"Week-{i}(%)", "id":i} for i in mes_adherence_df.columns[1:]], key=lambda x: int(x["id"]))
+    mes_adherence_dt_columns.insert(0, {"name":"Sites", "id":"location_name"})
     
-    mes_adherence_dt = dash_table.DataTable(mes_adherence_df.to_dict("records"), mes_adherence_dt_columns)
+    mes_adherence_dt = dash_table.DataTable(
+        mes_adherence_df.to_dict("records"), 
+        mes_adherence_dt_columns,
+        page_action='none', 
+        style_table={'height':"80vh", "overflowY":'auto'},
+        style_header={
+            'fontWeight': 'bolder'
+        }
+        )
     
     ### generating figure 
     fig_mes_adherence = px.line(
         index_mes_eTraveler_df,
         x="work_week",
         y="mes_adherence",
-        color="location_name"
-    ) 
+        color="location_name",
+        markers=True
+    )
+    trace_attr = dict(
+        marker = dict(
+            line=dict(width=1)
+        ),
+        textposition="bottom right"
+    )
+    fig_mes_adherence.update_traces(trace_attr)
+    
+    layout = go.Layout(
+        # marker 
+        xaxis=dict(
+            title=dict(
+                text="Work Week"
+            )
+        ), 
+        yaxis=dict(
+            title=dict(
+                text=""
+            ), 
+            ticksuffix="%"
+        ), 
+        margin=dict(
+           t=80,
+           b=60,
+           l=20,
+           r=40,
+           pad=0,
+           autoexpand=True
+        ),
+        title=dict(
+            text="MES Adoption & Adherence",
+            font=dict(
+                size=24,
+                family="Droid Sans"
+            )
+        ), 
+        hovermode='x', 
+        legend=dict(
+            title=dict(
+                text=""
+            )
+        )   
+    )
+    fig_mes_adherence.update_layout(layout) 
+     
     return mes_adherence_dt, fig_mes_adherence
 
 @app.callback(
@@ -121,6 +177,8 @@ def update_mes_adoption_adherence(workyear, workweek, locations):
     Input("global-slicer-locations", "value")
 )
 def update_iron_gate_violations(workyear, workweek, locations):
+    workyear, workweek, locations = sorted(workyear), sorted(workweek), sorted(locations)
+    
     filtered_mes_compliance_df = mes_compliance_df[
         mes_compliance_df.work_year.isin(workyear) &\
         mes_compliance_df.work_week.isin(workweek) &\
@@ -153,10 +211,19 @@ def update_iron_gate_violations(workyear, workweek, locations):
     iron_gate_violation_df.reset_index(inplace=True) 
     # print(iron_gate_violation_df)
      
-    iron_gate_violation_dt_columns = sorted([{"name":i, "id":i} for i in iron_gate_violation_df.columns[1:]], key=lambda x: int(x["name"]))
+    iron_gate_violation_dt_columns = sorted([{"name":f'Week-{i}(%)', "id":i} for i in iron_gate_violation_df.columns[1:]], key=lambda x: int(x["id"]))
     iron_gate_violation_dt_columns.insert(0, {"name":"Sites", "id":"location_name"})
-    
-    iron_gate_violation_dt = dash_table.DataTable(iron_gate_violation_df.to_dict("records"), iron_gate_violation_dt_columns)
+    print(iron_gate_violation_dt_columns)
+     
+    iron_gate_violation_dt = dash_table.DataTable(
+        iron_gate_violation_df.to_dict("records"), 
+        iron_gate_violation_dt_columns,
+        page_action='none', 
+        style_table={'height':"80vh", "overflowY":'auto'},
+        style_header={
+            'fontWeight': 'bolder'
+        }
+        )
     
     ### generating figure 
     fig_iron_gate_violation = px.bar(
@@ -166,5 +233,43 @@ def update_iron_gate_violations(workyear, workweek, locations):
         color="location_name",
         barmode="group"
     ) 
+
+    layout = go.Layout(
+        # marker 
+        xaxis=dict(
+            title=dict(
+                text="Work Week"
+            )
+        ), 
+        yaxis=dict(
+            title=dict(
+                text=""
+            ), 
+            ticksuffix="%"
+        ), 
+        margin=dict(
+           t=80,
+           b=60,
+           l=20,
+           r=40,
+           pad=0,
+           autoexpand=True
+        ),
+        title=dict(
+            text="Iron-Gate Violations",
+            font=dict(
+                size=24,
+                family="Droid Sans"
+            )
+        ), 
+        hovermode='x', 
+        legend=dict(
+            title=dict(
+                text=""
+            )
+        )   
+    )
+    fig_iron_gate_violation.update_traces(base_bar_attr)
+    fig_iron_gate_violation.update_layout(layout)
     
     return  iron_gate_violation_dt,  fig_iron_gate_violation

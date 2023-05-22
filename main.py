@@ -6,9 +6,9 @@ from dash import Input, Output
 import dash_bootstrap_components as dbc 
 from flask_caching import Cache 
 
-from src.layout import build_tabs, banner, footer, global_slicer
+from src.layout import build_tabs
 from src.layout.composent_test import dropdown_test
-from src.pages import about_page
+from src.pages import about_page, error_page
 
 from src.tabs import tab_documentation, \
     tab_mes_analytics, \
@@ -26,12 +26,12 @@ app.layout = dbc.Container(
     fluid=True, 
     children=[
         dcc.Location(id="url", refresh=False),
-        banner(), 
+        # banner(), 
         html.Div(
             className="page-content",
             id="page-content"
-        ), 
-        footer()
+        ) 
+        # footer()
     ]
 ) 
 
@@ -47,8 +47,7 @@ def display_page(pathname):
     elif pathname == "/about":
         return about_page()
     else:
-        return dcc.Markdown(
-            "#### wrong route path")
+        return error_page() 
 
 @app.callback(
     Output("tab-content", "children"),

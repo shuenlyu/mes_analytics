@@ -12,10 +12,11 @@ full list : ['BOOTSTRAP', 'CERULEAN', 'COSMO', 'CYBORG', 'DARKLY', 'FLATLY',\
     'PULSE', 'QUARTZ', 'SANDSTONE', 'SIMPLEX', 'SKETCHY', 'SLATE', 'SOLAR', \
     'SPACELAB', 'SUPERHERO', 'UNITED', 'VAPOR', 'YETI', 'ZEPHYR']
 """
-# template = "VAPOR"
-# template = "SOLAR"
+# # template = "VAPOR"
+template = "SOLAR"
 # template = "SLATE" #"SUPERHERO"
-template = "DARKLY"
+# template = "VAPOR"
+# template = "SUPERHERO"
 #set up theme template
 theme_template = getattr(dbc.themes, template)
 #set up figure template

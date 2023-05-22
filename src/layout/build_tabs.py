@@ -2,6 +2,8 @@
 from dash import html, dcc 
 import dash_bootstrap_components as dbc 
 from .global_slicer import global_slicer
+from .banner import banner
+from .footer import footer
 from .composent_test import dropdown_test
 
 def build_tabs():
@@ -10,6 +12,7 @@ def build_tabs():
         id = "tabs-container",
         className="dbc",
         children=[
+            banner(),
             dcc.Tabs(
                 id="tabs",
                 parent_className="custom-tabs",
@@ -60,6 +63,7 @@ def build_tabs():
                           html.Div(id="tab-content")
                     
                 ]
-            )
+            ),
+            footer()
         ]
     )

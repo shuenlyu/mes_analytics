@@ -147,7 +147,8 @@ def global_slicer_data():
         mes_rcv_df.location_name, 
         mes_shp_df.location_name, 
         mes_compliance_df.location_name
-    ], ignore_index=True).drop_duplicates().sort_values().to_list() 
+    ], ignore_index=True).drop_duplicates().sort_values().to_list()
+     
     return slicer_work_year, slicer_work_week, slicer_locations
 
 slicer_work_year, slicer_work_week, slicer_location = global_slicer_data()

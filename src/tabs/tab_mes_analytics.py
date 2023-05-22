@@ -8,55 +8,69 @@ import dash_bootstrap_components as dbc
 
 from app import app 
 from utils.data import mes_proc_df, mes_wait_df, eTraveler_df, mes_shp_df, shp_df
+from utils import base_layout, base_bar_attr
+
+
+
+
 
 #TODO extract the common filter or aggregation parts here
 def tab_mes_analytics():
     tab_layout = dbc.Row(
+        class_name="tab-ma",
         children=[
             dbc.Row(
+                class_name="tab-ma-row-first",
                 children=[
                     dbc.Col(
-                        dcc.Graph(id="graph-shp-mes-success"),
+                        id="graph-shp-mes-success",
+                        class_name="graph-container",
                         width=10
                     ),
                     dbc.Col(
+                        class_name="mes-ma-card",
                         children=[
                             dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.H4("Total BC Shipped", className="card-title"),
+                                        html.H6("Total BC Shipped", className="card-title"),
                                         html.P(id="text-total-barcodes", className="card-content")
                                     ]
-                                )
+                                ),
+                                class_name="mes-ma-cards"
                             ),
                             dbc.Card( 
                                 dbc.CardBody(
                                     [
-                                        html.H4("Penetration", className="card-title"),
+                                        html.H6("Penetration", className="card-title"),
                                         html.P(id="text-penetration", className="card-content")
                                     ]
-                                )
+                                ),
+                                class_name="mes-ma-cards"
                             ),
                             dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.H4("Adherence", className="cart-title"),
+                                        html.H6("Adherence", className="card-title"),
                                         html.P(id="text-adherence", className="card-content")
                                     ]
-                                )
+                                ),
+                                class_name="mes-ma-cards"
                             ),
                             ]
                         )
                 ]
             ), 
             dbc.Row(
+                class_name="tab-ma-row-second",
                 children=[
                     dbc.Col(dcc.Graph(id="graph-weekly-process-time")),
                     dbc.Col(dcc.Graph(id="graph-weekly-wait-time")),
                 ]
             ),
             dbc.Row(
-                    dbc.Col(dcc.Graph(id="graph-weekly-proc-wait-time"))
+                dbc.Col(dcc.Graph(id="graph-weekly-proc-wait-time")),
+                class_name='tab-ma-row-third'
                 
             )
             
@@ -66,7 +80,7 @@ def tab_mes_analytics():
 
 #chart 
 @app.callback(
-    Output("graph-shp-mes-success", "figure"),
+    Output("graph-shp-mes-success", "children"),
     Output("text-total-barcodes", "children"), 
     Output('text-penetration', "children"), 
     Output("text-adherence", "children"), 
@@ -107,42 +121,49 @@ def update_shp_mes_success(workyear, workweek, locations):
     bar_shp = go.Bar(
         x=total_shp_barcodes.index, 
         y=total_shp_barcodes,
-        # width=50, 
-        textposition="auto", 
-        texttemplate="%{y:.0f}", 
-        name="Total SHP"
+        name="Total SHP",
+        **base_bar_attr 
     )
     bar_mes_shp = go.Bar(
         x=total_mes_shp_barcodes.index, 
         y=total_mes_shp_barcodes, 
-        textposition="auto", 
-        texttemplate="%{y:.0f}",
-        name="MES SHP"
+        name="MES SHP",
+        **base_bar_attr
     ) 
     bar_mes_success = go.Bar(
         x=total_eTravler_barcodes.index, 
         y=total_eTravler_barcodes, 
-        textposition="auto", 
-        texttemplate="%{y:.0f}", 
-        name="MES Success" 
+        name="MES Success", 
+        **base_bar_attr 
     )
-   
-    layout=go.Layout(
-        title="Total SHP VS MES Success", 
-        yaxis=dict(title="Barcodes"),
-        xaxis=dict(title="Date") 
-        
-    )
+    print(total_shp_barcodes)
+    layout = base_layout 
+    layout.title = "Total SHP VS MES Success"
+    layout.yaxis.title = "Barcodes"
+    layout.xaxis.title = "Date"
     
     fig = go.Figure(
         data=[bar_shp, bar_mes_shp, bar_mes_success],
         layout=layout
     )
+    graph_width = max(1000, \
+        max(len(total_shp_barcodes),\
+        len(total_eTravler_barcodes),\
+        len(total_mes_shp_barcodes)) * 45)
+    print("graph len of mes-rcv-shp: ", graph_width)
+     
+    graph_comp = dcc.Graph(
+        figure=fig,
+        # responsive=True,
+        # style={"width":graph_width}
+    )
+    
     # print(total_shp_barcodes_sum, total_mes_shp_barcodes_sum, total_eTravler_barcodes_sum) 
     text_total_shp_barcodes = f"{total_shp_barcodes_sum:.0f}"
     text_penetration = f"{total_mes_shp_barcodes_sum/total_shp_barcodes_sum * 100: .0f}%"
     text_adherence = f"{total_eTravler_barcodes_sum/total_mes_shp_barcodes_sum * 100: .0f}%"
-    return fig, text_total_shp_barcodes, text_penetration, text_adherence 
+    
+    return graph_comp, text_total_shp_barcodes, text_penetration, text_adherence 
 
 
 
@@ -168,16 +189,11 @@ def update_weekly_process_time(workyear, workweek, locations):
     bar_process_time = go.Bar(
         x=sum_proc_time.index, 
         y=sum_proc_time, 
-        textposition="auto",
-        texttemplate="%{y:.0f}", 
-        name="ProcTime"
+        name="ProcTime",
+        **base_bar_attr
     )
-    layout_process_time = go.Layout(
-        title="Weekly Process Time",
-        # xaxis_title="Date", 
-        yaxis_title = "Hours",
-        xaxis=dict(title="Date", tickformat="%d %b")
-    )
+
+    layout_process_time = base_layout
      
     fig_process_time = go.Figure(
         data=[bar_process_time],
@@ -194,9 +210,8 @@ def update_weekly_process_time(workyear, workweek, locations):
     bar_wait_time = go.Bar(
         x=sum_wait_time.index, 
         y=sum_wait_time, 
-        textposition="auto", 
-        texttemplate="%{y:.0f}",
-        name="WaitTime"
+        name="WaitTime",
+        **base_bar_attr
     )
     layout_wait_time = go.Layout(
         title="Weekly Idle Time", 
@@ -207,12 +222,11 @@ def update_weekly_process_time(workyear, workweek, locations):
         data=[bar_wait_time], 
         layout=layout_wait_time
     )
-    
-    layout_process_wait_time = go.Layout(
-        title = "Weekly Process VS Idle Time", 
-        yaxis=dict(title="Hours"), 
-        xaxis=dict(title="Date", tickformat="%d %b")
-    )
+    layout_process_wait_time = base_layout
+    layout_process_wait_time.title = "Weekly Process VS Idle Time"
+    layout_process_wait_time.yaxis.title = "Hours"
+    layout_process_wait_time.xaxis.title = "Date"
+     
     fig_process_wait_time = go.Figure(
         data=[bar_process_time, bar_wait_time],
         layout=layout_process_wait_time

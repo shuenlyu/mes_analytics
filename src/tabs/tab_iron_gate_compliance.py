@@ -6,13 +6,20 @@ import plotly.graph_objects as go
 
 from utils.data import mes_compliance_df
 from app import app 
+from utils import base_layout, base_bar_attr
 
 def tab_iron_gate_compliance():
     tab_layout = dbc.Row(
+        class_name="tab-igc",
         children=[
             #TODO customize layout attributes
-            dbc.Col(dcc.Graph(id="graph-iron-gate-analysis")),
-            dbc.Col(id="table-iron-gate-compliance", className="dbc")
+            dbc.Col(dcc.Graph(id="graph-iron-gate-analysis"),
+                    class_name="tab-igc-graph"
+                    ),
+            dbc.Col(id="table-iron-gate-compliance", 
+                    # className="dbc",
+                    class_name="tab-igc-table"
+                    )
         ]
     )
     return tab_layout
@@ -41,14 +48,35 @@ def update_tab_iron_gate_compliance(workyear, workweek, locations):
         y = "wo_count", 
         color="action_status"
     )
+    
+    layout = base_layout
+    layout.title = "Iron-Gate Analysis"
+    layout.yaxis.title = "Count of WOs"
+    layout.legend.title = ""
+    
+    fig_iron_gate_analysis.update_traces(base_bar_attr)
+    fig_iron_gate_analysis.update_layout(layout)
     #TODO matrix table for iron-gate analysis
     filtered_mes_compliance_df.fillna(value={"override_by":" "}, inplace=True)
     count_wo_df = filtered_mes_compliance_df.groupby(["kit_box_date", "action_status", "override_by"])\
         .work_order_no.count().rename("wo_count").reset_index()
     
+    cols = [{"name":i, "id":i} for i in count_wo_df.columns]
+    cols[0]["name"] = "Date"
+    cols[1]["name"] = "Status"
+    cols[2]["name"] = "Override by"
+    cols[3]["name"] = 'Count of WOs'
+    
+    print(cols)
+     
     count_wo_dt = dash_table.DataTable(
         count_wo_df.to_dict("records"),
-        [{"name":i, "id":i} for i in count_wo_df.columns]
+        cols,
+        page_action='none', 
+        style_table={'height':"80vh", "overflowY":'auto'},
+        style_header={
+            'fontWeight': 'bolder'
+        }
     )
     
     return fig_iron_gate_analysis,  count_wo_dt 

@@ -34,3 +34,28 @@
     text-align: center;
     color: darkgray
 }
+
+.page-about {
+    text-align:center;
+    margin:auto;
+}
+
+.page-about .page-about--content {
+    font-size:xx-large;
+}
+
+.page-error {
+    text-align:center;
+    margin:auto;
+}
+
+.page-error .page-error--content {
+    font-size:xx-large;
+    color:darkred;
+}
+.page-error .page-error--href {
+    font-size:x-large;
+    color:darkblue;
+    text-decoration: underline;
+    font-weight: bolder;
+}

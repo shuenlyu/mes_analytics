@@ -1,0 +1,59 @@
+/* TAB MES ANALYTICS */
+.tab-ma-row-first {
+    margin-bottom: 10px;
+}
+.tab-ma-row-second {
+    margin-bottom: 10px;
+}
+.tab-ma-row-third {
+    margin-bottom: 10px;
+}
+
+.graph-container{
+    /* background-color: red; */
+    background-color:inherit;
+    border-width: 10px;
+    /* border-style: solid; */
+    overflow-x: auto;
+    /* border-color:; */
+}
+.mes-ma-card {
+    align-self:center;
+    /* align-content: center; */
+}
+
+.card-title {
+    text-align: left;
+    /* text-justify: auto; */
+    /* font-optical-sizing:auto; */
+    /* color:green; */
+}
+
+.card-content {
+    text-align:center;
+    /* text-justify:inter-cluster; */
+    font-size:x-large;
+    font-weight: bold;
+}
+
+.mes-ma-cards {
+    margin-bottom: 10px;
+}
+
+/* tab iron gate compliance */
+ /* .tab-igc-table {
+    overflow: scroll;
+}   */
+
+/* tab comparison */
+.tab-com-row-first {
+    margin-bottom: 15px;
+}
+
+/* tab weekly summary */
+.tab-ws-row-first {
+    margin-bottom: 10px;
+}
+.tab-ws-row-second {
+    margin-bottom: 10px;
+}

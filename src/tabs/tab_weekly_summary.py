@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import dash_bootstrap_components as dbc 
 
 from utils.data import rcv_shp_df, wip_df, tat_df, dmr_df, otd_df
+from utils import base_layout, base_bar_attr
 
 from app import app 
 
@@ -14,28 +15,27 @@ def tab_weekly_summary():
     tab_layout = dbc.Row(
         children=[
             dbc.Row(
+                class_name="tab-ws-row-first",
                 children=[
                     dbc.Col(dcc.Graph(id="graph-weekly-shp-rcv")), 
                     dbc.Col(dcc.Graph(id='graph-weekly-wip'))
                 ]
             ), 
             dbc.Row(
+                class_name="tab-ws-row-second",
                 children=[
                     dbc.Col(dcc.Graph(id="graph-weekly-otd")), 
                     dbc.Col(dcc.Graph(id="graph-weekly-avg-tat"))
                 ]
             ), 
             dbc.Row(
+                class_name="tab-ws-row-third",
                 children=[
-                    dbc.Col(dcc.Graph(id="graph-weekly-opened-dmrs")), 
-                    dbc.Col(
-                        children=[
-                            #this graph is created by the callback function in tab_mes_analytics.py 
-                            dcc.Graph(id="graph-shp-mes-success"),
-                            html.P(id="text-total-barcodes", hidden=True),
-                            html.P(id="text-penetration", hidden=True),
-                            html.P(id="text-adherence", hidden=True)
-                ])
+                    dbc.Col(dcc.Graph(id="graph-weekly-opened-dmrs"),width=6), 
+                    dbc.Col(id="graph-shp-mes-success", width=6,class_name="graph-container"),
+                    dbc.Col(html.P(id="text-total-barcodes", hidden=True),width=0),
+                    dbc.Col(html.P(id="text-penetration", hidden=True),width=0),
+                    dbc.Col(html.P(id="text-adherence", hidden=True),width=0)
                 ]
             )
         ]
@@ -72,7 +72,8 @@ def update_graph_weekly_shp_rcv(workyear, workweek, locations):
         # width = 0.4, 
         # offset = 0.0, 
         name = "RCV", 
-        marker = dict(color = "rgb(0,120,255)")
+        # marker = dict(color = "rgb(0,120,255)"
+        **base_bar_attr
     )
     bar_shp_late = go.Bar(
         x = groupby_shp_late_df.date, 
@@ -80,7 +81,8 @@ def update_graph_weekly_shp_rcv(workyear, workweek, locations):
         # width=0.4,  
         # offset = -0.4, 
         name = "SHP-Late", 
-        marker = dict(color = "rgb(250,60,0)")
+        # marker = dict(color = "rgb(250,60,0)")
+        **base_bar_attr
     )
     bar_shp_ontime = go.Bar(
         x = groupby_shp_ontime_df.date, 
@@ -88,14 +90,13 @@ def update_graph_weekly_shp_rcv(workyear, workweek, locations):
         # width=0.4,  
         # offset = -0.4, 
         name = "SHP-Ontime", 
-        marker = dict(color = "rgb(250,130,0)")
+        # marker = dict(color = "rgb(250,130,0)")
+        **base_bar_attr
     )
-    
-    layout = go.Layout(
-        title = "Weekly SHP-RCV (WOs)", 
-        yaxis=dict(title="WOs"), 
-        xaxis=dict(title="Date")
-    )
+    layout = base_layout 
+    layout.title = "Weekly SHP-RCV (WOs)" 
+    layout.yaxis.title = "WOs"
+    layout.xaxis.title = "Date"
     # groupby_shp_df = filtered_shp_df.groupby(["date", "late_ontime"]).total_wos.sum().reset_index()
     # fig_weekly_shp_rcv = px.bar(
     #     groupby_shp_df, 
@@ -142,8 +143,17 @@ def update_graph_weekly_wip(workyear, workweek, locations):
         x = "date", 
         y = "total_wos", 
         color = "late_ontime", 
-        barmode = "stack"
+        barmode = "stack",
     )
+    
+    ##update layout and update traces attributes
+    layout = base_layout 
+    layout.title = "Weekly WIP (WOs)"
+    layout.yaxis.title = "WOs"
+    layout.xaxis.title = "Date"
+    layout.legend.title = ""
+    fig_weekly_wip.update_traces(base_bar_attr) 
+    fig_weekly_wip.update_layout(layout)
      
     return fig_weekly_wip
 
@@ -168,6 +178,13 @@ def update_graph_weekly_otd(workyear, workweek, locations):
         x = "date", 
         y = "otd"
     )
+    layout = base_layout 
+    layout.title = "Weekly OTD%"
+    layout.xaxis.title = "Date" 
+    layout.yaxis.title = "OTD%"
+    fig_weekly_otd.update_traces(base_bar_attr)
+    fig_weekly_otd.update_layout(layout)
+    
     return fig_weekly_otd
 
 @app.callback(
@@ -192,6 +209,14 @@ def update_graph_weekly_avg_tat(workyear, workweek, locations):
         color = "late_ontime",
         barmode="group"
     )
+    layout = base_layout 
+    layout.title = "Weekly Avg TAT"
+    layout.xaxis.title = "Date"
+    layout.yaxis.title = "Days"
+    
+    fig_weekly_avg_tat.update_traces(base_bar_attr)
+    fig_weekly_avg_tat.update_layout(base_layout)
+    
     return fig_weekly_avg_tat
 
 @app.callback(
@@ -215,4 +240,11 @@ def update_graph_weekly_opened_dmrs(workyear, workweek, locations):
         y = "dmr_count", 
         color = "problemcategory"
     )
+    layout = base_layout
+    layout.title = "Weekly Opened DMRs"
+    layout.xaxis.title = "Date"
+    layout.yaxis.title = "Count"
+    
+    fig_weekly_opened_dmrs.update_traces(base_bar_attr)
+    fig_weekly_opened_dmrs.update_layout(layout)
     return fig_weekly_opened_dmrs
