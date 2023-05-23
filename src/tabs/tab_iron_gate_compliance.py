@@ -17,8 +17,8 @@ def tab_iron_gate_compliance():
                     class_name="tab-igc-graph"
                     ),
             dbc.Col(id="table-iron-gate-compliance", 
-                    # className="dbc",
-                    class_name="tab-igc-table"
+                    className="dbc",
+                    # class_name="tab-igc-table"
                     )
         ]
     )

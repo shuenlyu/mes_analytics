@@ -13,9 +13,9 @@ full list : ['BOOTSTRAP', 'CERULEAN', 'COSMO', 'CYBORG', 'DARKLY', 'FLATLY',\
     'SPACELAB', 'SUPERHERO', 'UNITED', 'VAPOR', 'YETI', 'ZEPHYR']
 """
 # # template = "VAPOR"
-template = "SOLAR"
+# template = "SOLAR"
 # template = "SLATE" #"SUPERHERO"
-# template = "VAPOR"
+template = "VAPOR"
 # template = "SUPERHERO"
 #set up theme template
 theme_template = getattr(dbc.themes, template)

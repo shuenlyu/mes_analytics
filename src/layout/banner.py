@@ -26,7 +26,7 @@ def banner():
             dbc.Col(
                 align="center",
                 children=[
-                    html.H3(
+                    html.H2(
                         className="banner-row--title",
                         children=["MES Analytics"]),
                 ],

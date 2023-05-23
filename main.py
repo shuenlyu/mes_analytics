@@ -71,7 +71,8 @@ def update_tab_content(tab_selected):
 if __name__ == "__main__":
     print(app._callback_list)
     app.run_server(
-        debug = True, 
+        debug = True,
+        # host="0.0.0.0", 
         port=8081,
         processes=1,
         threaded=True
