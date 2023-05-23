@@ -1,0 +1,5 @@
+dash_bootstrap_templates
+Flask-Caching
+pymssql
+pandas
+SQLAlchemy

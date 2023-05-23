@@ -69,11 +69,11 @@ def update_tab_content(tab_selected):
         return html.Div(f"Tab {tab_selected} not implemented yet!")
 
 if __name__ == "__main__":
-    print(app._callback_list)
+    #print(app._callback_list)
     app.run_server(
         debug = True,
-        # host="0.0.0.0", 
-        port=8081,
-        processes=1,
-        threaded=True
+        #host="0.0.0.0", 
+        #port=8081,
+        #processes=1,
+        #threaded=True
     )
