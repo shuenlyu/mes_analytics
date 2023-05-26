@@ -42,9 +42,10 @@ app.layout = dbc.Container(
     Input("url", "pathname")
 )
 def display_page(pathname):
-    if pathname == "/":
+    print("----pathname", pathname)
+    if pathname == "/mes_analytics/":
         return build_tabs() 
-    elif pathname == "/about":
+    elif pathname == "/mes_analytics/about":
         return about_page()
     else:
         return error_page() 

@@ -26,7 +26,9 @@ theme_template = getattr(dbc.themes, template)
 
 figure_template = load_figure_template(template.lower())
 
-app = Dash(__name__, external_stylesheets=[theme_template])
+app = Dash(__name__, 
+    requests_pathname_prefix="/mes_analytics/",\
+    external_stylesheets=[theme_template])
 
 cache = Cache(app.server, config={
     # "CACHE_TYPE": "flask_caching.backends.SimpleCache",

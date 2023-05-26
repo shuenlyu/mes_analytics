@@ -3,3 +3,4 @@ Flask-Caching
 pymssql
 pandas
 SQLAlchemy
+gunicorn
