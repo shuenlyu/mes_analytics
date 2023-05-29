@@ -16,7 +16,7 @@ from src.tabs import tab_documentation, \
     tab_weekly_summary, \
     tab_comparison
 
-from app import app 
+from app import app, REQUESTs_PATHNAME_PREFIX 
 
 server = app.server
 
@@ -43,9 +43,9 @@ app.layout = dbc.Container(
 )
 def display_page(pathname):
     print("----pathname", pathname)
-    if pathname == "/mes_analytics/":
+    if pathname == REQUESTs_PATHNAME_PREFIX:
         return build_tabs() 
-    elif pathname == "/mes_analytics/about":
+    elif pathname == f"{REQUESTs_PATHNAME_PREFIX}about":
         return about_page()
     else:
         return error_page() 

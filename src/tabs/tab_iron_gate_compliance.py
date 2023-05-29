@@ -73,7 +73,7 @@ def update_tab_iron_gate_compliance(workyear, workweek, locations):
         count_wo_df.to_dict("records"),
         cols,
         page_action='none', 
-        style_table={'height':"80vh", "overflowY":'auto'},
+        style_table={'height':"50vh", "overflowY":'auto'},
         style_header={
             'fontWeight': 'bolder'
         }

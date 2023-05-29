@@ -18,7 +18,7 @@ def tab_comparison():
                 class_name="tab-com-row-first",
                 children=[
                     dbc.Col(
-                        id="table-mes-adoption-adherence", className="dbc"
+                        id="table-mes-adoption-adherence", className="dbc",
                     ),
                     dbc.Col(
                         dcc.Graph(id="graph-mes-adoption-adherence"),
@@ -29,7 +29,7 @@ def tab_comparison():
                 # class_name="tab-com-rows",
                 children=[
                     dbc.Col(
-                        id="table-iron-gate-violations", className="dbc"
+                        id="table-iron-gate-violations", className="dbc",
                     ),
                     dbc.Col(
                         dcc.Graph(id="graph-iron-gate-violations")
@@ -108,7 +108,7 @@ def update_mes_adoption_adherence(workyear, workweek, locations):
         mes_adherence_df.to_dict("records"), 
         mes_adherence_dt_columns,
         page_action='none', 
-        style_table={'height':"80vh", "overflowY":'auto'},
+        style_table={'height':"50vh", "overflowY":'auto'},
         style_header={
             'fontWeight': 'bolder'
         }
@@ -219,7 +219,7 @@ def update_iron_gate_violations(workyear, workweek, locations):
         iron_gate_violation_df.to_dict("records"), 
         iron_gate_violation_dt_columns,
         page_action='none', 
-        style_table={'height':"80vh", "overflowY":'auto'},
+        style_table={'height':"50vh", "overflowY":'auto'},
         style_header={
             'fontWeight': 'bolder'
         }
